@@ -8,10 +8,6 @@
 ./apache/
 apache/
 
-# Prometheus configuration
-./prometheus/
-prometheus/
-
 # Python virtual environment
 .venv/
 venv/
