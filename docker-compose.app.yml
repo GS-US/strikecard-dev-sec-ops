@@ -1,0 +1,35 @@
+services:
+  django:
+    image: python:3.11-slim
+    container_name: app-django
+    working_dir: /app
+    volumes:
+      - ./django:/app
+      - venv_data:/.venv
+    env_file:
+      - .env
+    command: >
+      sh -c "
+        if [ ! -d /.venv ]; then
+          python -m venv /.venv;
+        fi &&
+        . /.venv/bin/activate &&
+        pip install --upgrade pip &&
+        pip install -r requirements.txt &&
+        exec gunicorn myproject.wsgi:application --bind 0.0.0.0:8000
+      "
+    depends_on:
+      - redis
+    ports:
+      - "8000:8000"
+    restart: always
+
+  redis:
+    image: redis:7
+    container_name: app-redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+volumes:
+  venv_data:
